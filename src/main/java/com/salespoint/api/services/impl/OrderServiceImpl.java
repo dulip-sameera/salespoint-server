@@ -2,6 +2,7 @@ package com.salespoint.api.services.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,18 +95,28 @@ public class OrderServiceImpl implements OrderService {
         ItemEntity item = itemRepository.findById(orderAddItemDto.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException());
 
+        Optional<OrderItemEntity> optionalOrderItem = orderItemRepository.findByOrderAndItem(order, item);
+
         boolean doesStockAvailable = (item.getQty() - orderAddItemDto.getQty()) > 0;
 
         if (!doesStockAvailable) {
             throw new ItemOutOfStockException();
         }
 
-        OrderItemEntity orderedItem = OrderItemEntity
-                .builder()
-                .order(order)
-                .item(item)
-                .qty(orderAddItemDto.getQty())
-                .build();
+        OrderItemEntity orderedItem;
+
+        if (optionalOrderItem.isPresent()) {
+            orderedItem = optionalOrderItem.get();
+            orderedItem.setQty(orderedItem.getQty() + orderAddItemDto.getQty());
+        } else {
+
+            orderedItem = OrderItemEntity
+                    .builder()
+                    .order(order)
+                    .item(item)
+                    .qty(orderAddItemDto.getQty())
+                    .build();
+        }
 
         item.setQty(item.getQty() - orderAddItemDto.getQty());
 
