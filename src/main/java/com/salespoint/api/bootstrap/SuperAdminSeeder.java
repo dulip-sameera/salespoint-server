@@ -42,7 +42,7 @@ public class SuperAdminSeeder implements ApplicationListener<ContextRefreshedEve
                 .builder()
                 .fullName("Super Admin")
                 .username("superadmin")
-                .password("123456")
+                .password("12345678")
                 .build();
 
         Optional<RoleEntity> optionalRole = roleRepository.findByName(RoleEnum.SUPER_ADMIN);
