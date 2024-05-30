@@ -15,7 +15,6 @@ public class ItemDto {
     private Long id;
     private String name;
     private BigDecimal unitPrice;
-    private Integer qty;
     private String status;
     private String category;
 }
