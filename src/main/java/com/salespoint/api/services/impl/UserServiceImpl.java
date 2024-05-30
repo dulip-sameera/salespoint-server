@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         RoleEnum[] roleEnums = RoleEnum.values();
         for (RoleEnum roleEnum : roleEnums) {
 
-            if (roleEnum.equals(RoleEnum.SUPER_ADMIN) || roleEnum.equals(RoleEnum.ADMIN)) {
+            if (roleEnum.equals(RoleEnum.SUPER_ADMIN)) {
                 continue;
             }
 
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
         RoleEnum[] roleEnums = RoleEnum.values();
         for (RoleEnum roleEnum : roleEnums) {
 
-            if (roleEnum.equals(RoleEnum.SUPER_ADMIN) || roleEnum.equals(RoleEnum.ADMIN)) {
+            if (roleEnum.equals(RoleEnum.SUPER_ADMIN)) {
                 continue;
             }
 
