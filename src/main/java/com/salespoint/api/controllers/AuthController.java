@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@CrossOrigin
+import com.salespoint.api.exceptions.customs.user.InvalidPasswordLengthException;
+import com.salespoint.api.exceptions.customs.user.InvalidUsernameLengthException;
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -26,8 +29,23 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    private int ACCEPTABLE_USERNAME_LENGTH = 3;
+    private int ACCEPTABLE_PASSWORD_LENGTH = 8;
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+
+        loginUserDto.setUsername(loginUserDto.getUsername().trim());
+        loginUserDto.setPassword(loginUserDto.getPassword().trim());
+
+        if (loginUserDto.getUsername().length() < ACCEPTABLE_USERNAME_LENGTH) {
+            throw new InvalidUsernameLengthException("Username's length is less than " + ACCEPTABLE_USERNAME_LENGTH);
+        }
+
+        if (loginUserDto.getPassword().length() < ACCEPTABLE_PASSWORD_LENGTH) {
+            throw new InvalidPasswordLengthException("Password's length is less than " + ACCEPTABLE_PASSWORD_LENGTH);
+        }
+
         UserEntity authenticatedUser = userService.authenticate(loginUserDto);
 
         String jwtToken = jwtUtils.generateToken(authenticatedUser);
