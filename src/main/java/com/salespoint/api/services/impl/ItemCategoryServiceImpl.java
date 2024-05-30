@@ -46,6 +46,14 @@ public class ItemCategoryServiceImpl implements ItemCategoryService {
 
     @Override
     public ItemCategoryEntity updateItemCategory(Integer id, ItemCategoryEntity itemCategory) {
+
+        Optional<ItemCategoryEntity> optionalItemCategory = itemCategoryRepository
+                .findByName(itemCategory.getName());
+
+        if (optionalItemCategory.isPresent()) {
+            throw new ItemCategoryAlreadyExistsException();
+        }
+
         ItemCategoryEntity existingItemCategory = itemCategoryRepository.findById(id)
                 .orElseThrow(() -> new ItemCategoryNotFoundException());
         existingItemCategory.setName(itemCategory.getName());
