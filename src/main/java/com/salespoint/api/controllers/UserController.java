@@ -29,7 +29,7 @@ import com.salespoint.api.utils.enums.RoleEnum;
 import com.salespoint.api.utils.enums.UserStatusEnum;
 import com.salespoint.api.utils.response.UserResponse;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -97,8 +97,7 @@ public class UserController {
     }
 
     @GetMapping("/statuses")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER',
-    // 'CLERK','CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER','CLERK','CASHIER')")
     public ResponseEntity<List<String>> getAllStatuses() {
         List<String> statuses = new ArrayList<>();
 
@@ -110,8 +109,7 @@ public class UserController {
     }
 
     @GetMapping("/roles")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER',
-    // 'CLERK','CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER','CLERK','CASHIER')")
     public ResponseEntity<List<String>> getAllUserRoles() {
         List<String> statuses = new ArrayList<>();
 
@@ -123,8 +121,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         UserEntity userEntity = userService.getUserById(id);
 
@@ -146,7 +143,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/create")
-    // @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<UserResponse> createAdmin(@RequestBody UserDto userDto) {
 
         // if exists, remove leading and trailing white spaces
@@ -186,7 +183,7 @@ public class UserController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserDto userDto) {
 
         // if exists, remove leading and trailing white spaces
@@ -226,7 +223,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         // if exists, remove leading and trailing white spaces
         userDto.setFullName(userDto.getFullName().trim());
@@ -268,7 +265,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
 
         userService.deleteUser(id);

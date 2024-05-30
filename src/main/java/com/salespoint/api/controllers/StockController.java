@@ -25,7 +25,7 @@ import com.salespoint.api.services.StockService;
 import com.salespoint.api.utils.response.ItemResponse;
 import com.salespoint.api.utils.response.StockResponse;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/stocks")
 public class StockController {
@@ -35,8 +35,7 @@ public class StockController {
     private Integer ACCEPTABLE_MINIMUM_QUANTITY = 1;
 
     @GetMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<List<StockResponse>> getAllStocks() {
 
         Iterable<StockEntity> stocks = stockService.getAllStocks();
@@ -77,8 +76,7 @@ public class StockController {
     }
 
     @GetMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<StockResponse> getStockById(@PathVariable Long id) {
         StockEntity stock = stockService.getStockById(id);
 
@@ -110,8 +108,7 @@ public class StockController {
     }
 
     @GetMapping("/item/{itemId}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<List<StockResponse>> getStocksByItem(@PathVariable Long itemId) {
 
         List<StockEntity> stocks = stockService.getStocksByItem(itemId);
@@ -152,7 +149,7 @@ public class StockController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<StockResponse> createStock(@RequestBody StockDto stockDto) {
 
         // validations
@@ -189,7 +186,7 @@ public class StockController {
     }
 
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<StockResponse> updateStock(@PathVariable Long id, @RequestBody StockDto stockDto) {
 
         // validations
@@ -227,7 +224,7 @@ public class StockController {
     }
 
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<String> deleteStock(@PathVariable Long id) {
         stockService.deleteStock(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Stock Deleted");

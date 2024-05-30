@@ -21,7 +21,7 @@ import com.salespoint.api.dtos.OrderRemoveItemDto;
 import com.salespoint.api.entities.OrderEntity;
 import com.salespoint.api.services.OrderService;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -30,15 +30,13 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<Iterable<OrderEntity>> getAllOrders() {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrders());
     }
 
     @GetMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
 
         OrderEntity order = orderService.getOrderById(id);
@@ -48,8 +46,7 @@ public class OrderController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderDto orderDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderDto));
@@ -57,8 +54,7 @@ public class OrderController {
     }
 
     @PostMapping("/add-item")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<OrderEntity> addItemToOrder(@RequestBody OrderAddItemDto orderAddItemDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addItemToOrder(orderAddItemDto));
@@ -66,8 +62,7 @@ public class OrderController {
     }
 
     @PostMapping("/remove-item")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<OrderEntity> removeItemFromOrder(@RequestBody OrderRemoveItemDto orderRemoveItemDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.removeItemFromOrder(orderRemoveItemDto));
@@ -75,8 +70,7 @@ public class OrderController {
     }
 
     @PutMapping("/pay")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<Object> updatePaidStatus(@RequestBody OrderPaidStatusDto orderPaidStatusDto) {
 
         return ResponseEntity.status(HttpStatus.OK).body(orderService.updateOrderPaidStatus(orderPaidStatusDto));
@@ -84,7 +78,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK', 'CASHIER')")
     public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
 
         orderService.deleteOrder(id);

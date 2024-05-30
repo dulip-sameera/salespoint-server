@@ -25,7 +25,7 @@ import com.salespoint.api.services.ItemService;
 import com.salespoint.api.utils.enums.ItemStatusEnum;
 import com.salespoint.api.utils.response.ItemResponse;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -33,8 +33,7 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<List<ItemResponse>> getAllItems() {
         Iterable<ItemEntity> items = itemService.getAllItems();
 
@@ -48,7 +47,7 @@ public class ItemController {
                     .name(item.getName())
                     .unitPrice(item.getUnitPrice())
                     .qty(item.getQty())
-                    .status(item.getStatus().toString())
+                    .status(item.getStatus().getName().toString())
                     .category(item.getItemCategory().getName())
                     .createdAt(item.getCreatedAt())
                     .updatedAt(item.getUpdatedAt())
@@ -63,8 +62,7 @@ public class ItemController {
     }
 
     @GetMapping("/statuses")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<List<String>> getAllStatuses() {
         List<String> statuses = new ArrayList<>();
 
@@ -76,8 +74,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',
-    // 'CASHIER')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<ItemResponse> getItemById(@PathVariable Long id) {
         ItemEntity item = itemService.getItemById(id);
         ItemResponse itemResponse = ItemResponse
@@ -86,7 +83,7 @@ public class ItemController {
                 .name(item.getName())
                 .unitPrice(item.getUnitPrice())
                 .qty(item.getQty())
-                .status(item.getStatus().toString())
+                .status(item.getStatus().getName().toString())
                 .category(item.getItemCategory().getName())
                 .createdAt(item.getCreatedAt())
                 .updatedAt(item.getUpdatedAt())
@@ -96,7 +93,7 @@ public class ItemController {
     }
 
     @PostMapping
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<ItemResponse> createItem(@RequestBody ItemDto itemDto) {
         // If exists, remove leading and trailing white spaces
         itemDto.setName(itemDto.getName().trim());
@@ -115,7 +112,7 @@ public class ItemController {
                 .name(createdItem.getName())
                 .unitPrice(createdItem.getUnitPrice())
                 .qty(createdItem.getQty())
-                .status(createdItem.getStatus().toString())
+                .status(createdItem.getStatus().getName().toString())
                 .category(createdItem.getItemCategory().getName())
                 .createdAt(createdItem.getCreatedAt())
                 .updatedAt(createdItem.getUpdatedAt())
@@ -125,7 +122,7 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<ItemResponse> updateItem(@PathVariable Long id, @RequestBody ItemDto itemDto) {
         // If exists, remove leading and trailing white spaces
         itemDto.setName(itemDto.getName().trim());
@@ -133,10 +130,6 @@ public class ItemController {
         // validation
         if (itemDto.getUnitPrice().signum() < 0) {
             throw new ItemPriceInvalidException();
-        }
-
-        if (itemDto.getQty() > 0) {
-            throw new ItemInvalidQuantityException();
         }
 
         ItemEntity updatedItem = itemService.updateItem(id, itemDto);
@@ -147,7 +140,7 @@ public class ItemController {
                 .name(updatedItem.getName())
                 .unitPrice(updatedItem.getUnitPrice())
                 .qty(updatedItem.getQty())
-                .status(updatedItem.getStatus().toString())
+                .status(updatedItem.getStatus().getName().toString())
                 .category(updatedItem.getItemCategory().getName())
                 .createdAt(updatedItem.getCreatedAt())
                 .updatedAt(updatedItem.getUpdatedAt())
@@ -157,7 +150,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<String> deleteItem(@PathVariable Long id) {
 
         itemService.deleteItem(id);
