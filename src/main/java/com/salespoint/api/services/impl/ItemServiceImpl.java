@@ -19,6 +19,7 @@ import com.salespoint.api.repositories.ItemRepository;
 import com.salespoint.api.repositories.ItemStatusRepository;
 import com.salespoint.api.services.ItemService;
 import com.salespoint.api.utils.enums.ItemStatusEnum;
+import com.salespoint.api.utils.enums.UserStatusEnum;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -78,12 +79,18 @@ public class ItemServiceImpl implements ItemService {
     public ItemEntity updateItem(Long id, ItemDto itemDto) {
         ItemEntity existingItem = itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException());
 
+        ItemStatusEnum statusEnum = itemDto.getStatus().equals(ItemStatusEnum.ACTIVE.toString()) ? ItemStatusEnum.ACTIVE
+                : ItemStatusEnum.DELETE;
+
+        ItemStatusEntity status = itemStatusRepository.findByName(statusEnum)
+                .orElseThrow(() -> new ItemStatusNotFoundException());
+
         ItemCategoryEntity category = itemCategoryRepository.findByName(itemDto.getCategory())
                 .orElseThrow(() -> new ItemCategoryNotFoundException());
 
         existingItem.setName(itemDto.getName());
         existingItem.setUnitPrice(itemDto.getUnitPrice());
-        existingItem.setQty(itemDto.getQty());
+        existingItem.setStatus(status);
         existingItem.setItemCategory(category);
 
         return itemRepository.save(existingItem);
