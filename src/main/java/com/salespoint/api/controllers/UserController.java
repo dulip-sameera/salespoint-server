@@ -28,6 +28,7 @@ import com.salespoint.api.services.UserService;
 import com.salespoint.api.utils.enums.RoleEnum;
 import com.salespoint.api.utils.enums.UserStatusEnum;
 import com.salespoint.api.utils.response.UserResponse;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @CrossOrigin("*")
 @RestController
@@ -140,6 +141,27 @@ public class UserController {
 
         return ResponseEntity.ok(userResponse);
 
+    }
+
+    @GetMapping("/find/{username}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
+    public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
+        UserEntity userEntity = userService.getUserByUsername(username);
+
+        UserResponse userResponse = UserResponse
+                .builder()
+                .id(userEntity.getId())
+                .fullName(userEntity.getFullName())
+                .username(userEntity.getUsername())
+                .role(userEntity.getRole().getName().toString())
+                .status(userEntity.getStatus().getName().toString())
+                .isAccountNonExpired(userEntity.isAccountNonExpired())
+                .isAccountNonLocked(userEntity.isAccountNonLocked())
+                .isCredentialsNonExpired(userEntity.isCredentialsNonExpired())
+                .isEnabled(userEntity.isEnabled())
+                .build();
+
+        return ResponseEntity.ok(userResponse);
     }
 
     @PostMapping("/admin/create")
