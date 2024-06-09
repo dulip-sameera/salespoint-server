@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.salespoint.api.dtos.ItemDto;
 import com.salespoint.api.entities.ItemEntity;
-import com.salespoint.api.exceptions.customs.item.ItemInvalidQuantityException;
 import com.salespoint.api.exceptions.customs.item.ItemPriceInvalidException;
 import com.salespoint.api.services.ItemService;
 import com.salespoint.api.utils.enums.ItemStatusEnum;
@@ -77,6 +76,24 @@ public class ItemController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<ItemResponse> getItemById(@PathVariable Long id) {
         ItemEntity item = itemService.getItemById(id);
+        ItemResponse itemResponse = ItemResponse
+                .builder()
+                .id(item.getId())
+                .name(item.getName())
+                .unitPrice(item.getUnitPrice())
+                .qty(item.getQty())
+                .status(item.getStatus().getName().toString())
+                .category(item.getItemCategory().getName())
+                .createdAt(item.getCreatedAt())
+                .updatedAt(item.getUpdatedAt())
+                .build();
+
+        return ResponseEntity.ok(itemResponse);
+    }
+
+    @GetMapping("/find/{itemName}")
+    public ResponseEntity<ItemResponse> getItemByName(@PathVariable String itemName) {
+        ItemEntity item = itemService.getItemByName(itemName);
         ItemResponse itemResponse = ItemResponse
                 .builder()
                 .id(item.getId())
