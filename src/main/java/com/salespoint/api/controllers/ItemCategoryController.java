@@ -39,6 +39,12 @@ public class ItemCategoryController {
 
     }
 
+    @GetMapping("/find/{itemCategoryName}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
+    public ResponseEntity<ItemCategoryEntity> getItemCategoryByName(@PathVariable String itemCategoryName) {
+        return ResponseEntity.ok(itemCategoryService.getItemCategoryByName(itemCategoryName));
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<ItemCategoryEntity> createItemCategory(@RequestBody ItemCategoryEntity itemCategory) {
