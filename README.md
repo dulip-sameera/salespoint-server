@@ -8,7 +8,7 @@ This project is a Point-of-Sale (POS) system developed using the Spring MVC fram
 
 The View is a React based web application.
 
-The system leverages MySQL as its database management system, providing a reliable and scalable solution for storing and managing transactional data, user information, inventory, and sales records. MySQL ensures that all data is consistently stored, and allows for easy queries and updates to the system’s datasets.
+The system leverages MySQL as its database management system, providing a reliable and scalable solution for storing and managing user information, inventory, and sales records. MySQL ensures that all data is consistently stored, and allows for easy queries and updates to the system’s datasets.
 
 ## Key Features:
 
