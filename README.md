@@ -1,4 +1,4 @@
-# Welcome to SalesPoint Server
+# Welcome to SalesPoint API
 
 This project is a Point-of-Sale (POS) system developed using the Spring MVC framework, which is a widely used, robust framework for building Java-based web applications. The application follows the Model-View-Controller (MVC) design pattern, which helps in organizing the code into three main layers:
 
