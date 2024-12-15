@@ -90,7 +90,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponse);
     }
 
-    @GetMapping("/statuses")
+        @GetMapping("/statuses")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
     public ResponseEntity<List<String>> getAllStatuses() {
         List<String> statuses = new ArrayList<>();
@@ -164,7 +164,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK',)")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK')")
     public ResponseEntity<String> deleteCustomer(@PathVariable Long id) {
 
         customerService.deleteCustomer(id);
