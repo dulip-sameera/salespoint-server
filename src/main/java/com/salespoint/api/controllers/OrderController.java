@@ -1,5 +1,7 @@
 package com.salespoint.api.controllers;
 
+import com.salespoint.api.utils.response.OrderItemResponse;
+import com.salespoint.api.utils.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ import com.salespoint.api.dtos.OrderRemoveItemDto;
 import com.salespoint.api.entities.OrderEntity;
 import com.salespoint.api.services.OrderService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/orders")
@@ -31,49 +36,52 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
-    public ResponseEntity<Iterable<OrderEntity>> getAllOrders() {
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrders());
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        Iterable<OrderEntity> allOrders = orderService.getAllOrders();
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        allOrders.forEach(order -> {
+            orderResponses.add(generateOrderResponse(order));
+        });
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponses);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
-    public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
-
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
         OrderEntity order = orderService.getOrderById(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(order);
+        return ResponseEntity.status(HttpStatus.OK).body(generateOrderResponse(order));
 
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
-    public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderDto orderDto) {
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderDto));
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderDto orderDto) {
+        OrderEntity order = orderService.createOrder(orderDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(generateOrderResponse(order));
 
     }
 
     @PostMapping("/add-item")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
-    public ResponseEntity<OrderEntity> addItemToOrder(@RequestBody OrderAddItemDto orderAddItemDto) {
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addItemToOrder(orderAddItemDto));
+    public ResponseEntity<OrderResponse> addItemToOrder(@RequestBody OrderAddItemDto orderAddItemDto) {
+        OrderEntity order = orderService.addItemToOrder(orderAddItemDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(generateOrderResponse(order));
 
     }
 
     @PostMapping("/remove-item")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
-    public ResponseEntity<OrderEntity> removeItemFromOrder(@RequestBody OrderRemoveItemDto orderRemoveItemDto) {
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.removeItemFromOrder(orderRemoveItemDto));
+    public ResponseEntity<OrderResponse> removeItemFromOrder(@RequestBody OrderRemoveItemDto orderRemoveItemDto) {
+        OrderEntity order = orderService.removeItemFromOrder(orderRemoveItemDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(generateOrderResponse(order));
 
     }
 
     @PutMapping("/pay")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'MANAGER', 'CLERK','CASHIER')")
-    public ResponseEntity<Object> updatePaidStatus(@RequestBody OrderPaidStatusDto orderPaidStatusDto) {
-
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.updateOrderPaidStatus(orderPaidStatusDto));
+    public ResponseEntity<OrderResponse> updatePaidStatus(@RequestBody OrderPaidStatusDto orderPaidStatusDto) {
+        OrderEntity order = orderService.updateOrderPaidStatus(orderPaidStatusDto);
+        return ResponseEntity.status(HttpStatus.OK).body(generateOrderResponse(order));
 
     }
 
@@ -86,4 +94,32 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Order Deleted");
 
     }
+
+    private OrderResponse generateOrderResponse(OrderEntity order) {
+        List<OrderItemResponse> orderItemResponses = new ArrayList<>();
+        if (order.getOrderItems() != null) {
+            order.getOrderItems().forEach(orderItem -> {
+                OrderItemResponse orderItemResponse = OrderItemResponse
+                        .builder()
+                        .id(orderItem.getId())
+                        .qty(orderItem.getQty())
+                        .itemId(orderItem.getItem().getId())
+                        .build();
+                orderItemResponses.add(orderItemResponse);
+            });
+        }
+
+        return OrderResponse
+                .builder()
+                .id(order.getId())
+                .totalPrice(order.getTotalPrice())
+                .orderPaid(order.getOrderPaid())
+                .customerId(order.getCustomer().getId())
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
+                .createdBy(order.getCreatedBy().getId())
+                .orderItems(orderItemResponses)
+                .build();
+    }
 }
+
