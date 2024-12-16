@@ -36,3 +36,5 @@ The system leverages MySQL as its database management system, providing a reliab
 - Lombok
 
 When running the project fill the `application.properties` with correct values.
+
+For API Documentation click [here](https://documenter.getpostman.com/view/17128627/2sAYHzF39Z).
